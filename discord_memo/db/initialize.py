@@ -1,19 +1,18 @@
 from sqlalchemy.orm import Session
 from discord_memo.db.database import SessionLocal, engine
-from discord_memo.db import models
-
-
-def init_db(db: Session):
-    hoge = [
-        models.Hoge(name="hoge", number=1),
-        models.Hoge(name="fuga", number=2),
-    ]
-    db.add_all(hoge)
-    db.commit()
+from discord_memo.db import models, crud
 
 
 if __name__ == "__main__":
-    db = SessionLocal()
-    models.Base.metadata.create_all(bind=engine)
-    init_db(db)
-    db.close()
+	crud.create_tag(SessionLocal(), channel_id=1, name="hoge")
+	crud.create_tag(SessionLocal(), channel_id=1, name="fuga")
+	print(crud.get_tags(SessionLocal()))
+	print(crud.get_tag(SessionLocal(), 1))
+	print(crud.get_tag(SessionLocal(), 2))
+
+	crud.update_tag(SessionLocal(), 1, "piyo")
+	print(crud.get_tag(SessionLocal(), 1))
+
+	crud.delete_tag(SessionLocal(), 1)
+	print(crud.get_tag(SessionLocal(), 1))
+	print(crud.get_tags(SessionLocal()))
