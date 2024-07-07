@@ -9,6 +9,8 @@ intents = discord.Intents.default()
 async def main():
     INITIAL_EXTENSIONS = [
         "cogs.hello",
+        "cogs.custom_contents",
+        "cogs.example_cog"
     ]
     TOKEN = config.DISCORD_TOKEN
 
@@ -16,7 +18,11 @@ async def main():
 
     async def load_extensions(bot):
         for extension in INITIAL_EXTENSIONS:
-            await bot.load_extension(extension)
+            try:
+                await bot.load_extension(extension)
+                print(f"Loaded extesion: {extension}")
+            except Exception as e:
+                print(f"Failed to load extension {extension}: {e}")
 
     @bot.event
     async def setup_hook() -> None:
