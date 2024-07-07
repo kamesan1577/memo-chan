@@ -1,37 +1,43 @@
 name: Format and Lint Python
 
 on:
+  push:
+    branches:
+      - main  
   pull_request:
-  workflow_dispatch:
+    branches:
+      - main  
 
 jobs:
-  run-format:
+  format:
     runs-on: ubuntu-latest
-    name: Run Format
+
     steps:
-      - name: Check out source repository
-        uses: actions/checkout@v4
-      - name: Set up Python environment
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      # キャッシュの読み込み
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      # 依存関係のインストール
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'  
 
-      # Ruffの実行
-      # https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#using-ruff-to-lint-code
-      - name: Format with Ruff
-        run: |
-          pip install ruff
-          ruff format
+    - name: Install Ruff
+      run: pip install ruff
+
+    - name: Run Ruff
+      run: ruff check . --fix
+
+    - name: Commit changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add .
+        git commit -m 'Format code with Ruff'
+      continue-on-error: true
+
+    - name: Push changes
+      if: success()
+      uses: ad-m/github-push-action@v0.8.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: main 
