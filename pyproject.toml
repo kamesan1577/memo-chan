@@ -18,11 +18,8 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
-select = ["I","N"]
-unfixable = ["F401","F841"]
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "tab"
+lint.unfixable = ["F401","F841"]
+format.quote-style = "double"
+format.indent-style = "tab"
 
 
