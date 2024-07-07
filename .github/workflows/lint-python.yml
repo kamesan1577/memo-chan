@@ -34,7 +34,7 @@ jobs:
       - name: Format with Ruff
         run: |
           pip install ruff
-          ruff --fix . --output-format=github
+          ruff --fix --output-format=github
 
       # mypyの実行
       - name: Lint with Mypy
