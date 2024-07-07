@@ -1,7 +1,7 @@
 import asyncio
 import discord
 from discord.ext import commands
-from . import config
+from discord_memo import config
 
 intents = discord.Intents.default()
 
