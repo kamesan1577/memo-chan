@@ -9,7 +9,7 @@ intents = discord.Intents.default()
 
 async def main():
 	extensions = []
-	for cog in os.listdir("discord_memo/cogs"):  # これってハードコードでいいんだろうか
+	for cog in os.listdir("./cogs"):  
 		if cog.endswith(".py"):
 			extensions.append(f"cogs.{cog[:-3]}")
 
