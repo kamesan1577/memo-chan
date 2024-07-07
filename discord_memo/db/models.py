@@ -2,8 +2,8 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, Foreign
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from database import Base
-from database import engine
+from discord_memo.db.database import Base
+from discord_memo.db.database import engine
 
 class Tag(Base):
     __tablename__ = "tag"
