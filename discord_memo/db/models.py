@@ -23,7 +23,7 @@ class Tag(Base):
         "updated_at",
         DateTime,
         nullable=False,
-        server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
+        server_default=func.now(),
         comment="更新日時",
     )
     is_deleted = Column("is_deleted", Boolean, nullable=False, default=False, comment="削除フラグ")
@@ -39,7 +39,7 @@ class Message(Base):
         "last_updated_at",
         DateTime,
         nullable=False,
-        server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
+        server_default=func.now(),
         comment="最終更新日時",
     )
     created_at = Column(
@@ -82,7 +82,7 @@ class MessageGroup(Base):
         "updated_at",
         DateTime,
         nullable=False,
-        server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
+        server_default=func.now(),
         comment="更新日時",
     )
 
