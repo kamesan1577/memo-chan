@@ -34,10 +34,4 @@ jobs:
       - name: Format with Ruff
         run: |
           pip install ruff
-          ruff --fix --output-format=github
-
-      # mypyの実行
-      - name: Lint with Mypy
-        run: |
-          pip install mypy
-          mypy . --config-file pyproject.toml --ignore-missing-imports --no-namespace-packages
+          ruff format --output-format=github

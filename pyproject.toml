@@ -19,4 +19,10 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 select = ["I","N"]
-ignore = ["E","F"]
+unfixable = ["F401","F841"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "tab"
+
+
