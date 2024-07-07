@@ -1,5 +1,6 @@
 import asyncio
 import discord
+import os
 from discord.ext import commands
 from discord_memo import config
 
@@ -7,30 +8,30 @@ intents = discord.Intents.default()
 
 
 async def main():
-    INITIAL_EXTENSIONS = [
-        "cogs.hello",
-        "cogs.custom_contents",
-        "cogs.example_cog"
-    ]
-    TOKEN = config.DISCORD_TOKEN
+	extensions = []
+	for cog in os.listdir("discord_memo/cogs"):  # これってハードコードでいいんだろうか
+		if cog.endswith(".py"):
+			extensions.append(f"cogs.{cog[:-3]}")
 
-    bot = commands.Bot(command_prefix="/", intents=intents)
+	TOKEN = config.DISCORD_TOKEN
 
-    async def load_extensions(bot):
-        for extension in INITIAL_EXTENSIONS:
-            try:
-                await bot.load_extension(extension)
-                print(f"Loaded extesion: {extension}")
-            except Exception as e:
-                print(f"Failed to load extension {extension}: {e}")
+	bot = commands.Bot(command_prefix="/", intents=intents)
 
-    @bot.event
-    async def setup_hook() -> None:
-        await bot.tree.sync()
+	async def load_extensions(bot):
+		for extension in extensions:
+			try:
+				await bot.load_extension(extension)
+				print(f"Loaded extesion: {extension}")
+			except Exception as e:
+				print(f"Failed to load extension {extension}: {e}")
 
-    await load_extensions(bot)
-    await bot.start(TOKEN)
+	@bot.event
+	async def setup_hook() -> None:
+		await bot.tree.sync()
+
+	await load_extensions(bot)
+	await bot.start(TOKEN)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+	asyncio.run(main())
