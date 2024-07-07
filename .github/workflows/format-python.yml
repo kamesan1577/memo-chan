@@ -34,4 +34,4 @@ jobs:
       - name: Format with Ruff
         run: |
           pip install ruff
-          ruff format --output-format=github
+          ruff format
