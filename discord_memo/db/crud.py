@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 
 from discord_memo.db.models import Message, MessageGroup, Tag, Tag2Message
 
+from discord_memo.db.database import SessionLocal
+
 
 # TagのCRUD操作
 def create_tag(db: Session, channel_id: int, name: str):
