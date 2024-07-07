@@ -7,7 +7,7 @@ RUN pip install poetry
 
 RUN git clone --depth 1 https://github.com/kamesan1577/geek-camp-vol8.git
 WORKDIR /src/geek-camp-vol8
-ENV PYTHONPATH "${PYTHONPATH}:/src/geek-camp-vol8/"
+ENV PYTHONPATH="/src/geek-camp-vol8/"
 
 RUN poetry config virtualenvs.in-project true
 RUN if [ -f pyproject.toml ]; then poetry install --no-root; fi
