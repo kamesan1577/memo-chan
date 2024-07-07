@@ -1,6 +1,6 @@
-from database import SessionLocal
+from .database import SessionLocal
 
-from models import Hoge
+from .models import Hoge
 
 
 def create_hoge(hoge_data):
