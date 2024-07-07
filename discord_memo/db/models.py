@@ -1,9 +1,18 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey, text
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    text,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from discord_memo.db.database import Base
-from discord_memo.db.database import engine
+from discord_memo.db.database import Base, engine
+
 
 class Tag(Base):
     __tablename__ = "tag"
