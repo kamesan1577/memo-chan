@@ -9,6 +9,8 @@ intents = discord.Intents.default()
 async def main():
     INITIAL_EXTENSIONS = [
         "cogs.hello",
+        "cogs.custom_contents",
+        "cogs.example_cog"
     ]
     TOKEN = config.DISCORD_TOKEN
 
