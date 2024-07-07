@@ -1,6 +1,6 @@
-from .database import SessionLocal
+from discord_memo.db.database import SessionLocal
 
-from .models import Hoge
+from discord_memo.db.models import Hoge
 
 
 def create_hoge(hoge_data):

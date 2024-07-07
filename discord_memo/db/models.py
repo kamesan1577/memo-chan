@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from .database import Base, engine
+from discord_memo.db.database import Base, engine
 
 
 class Hoge(Base):
@@ -27,7 +27,7 @@ class Hoge(Base):
         "updated_at",
         DateTime,
         nullable=False,
-        server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
+        server_default=func.now(),
         comment="更新日時",
     )
 
