@@ -9,7 +9,8 @@ intents = discord.Intents.default()
 
 async def main():
 	extensions = []
-	for cog in os.listdir("./cogs"):  
+	current_dir = os.path.dirname(os.path.abspath(__file__))
+	for cog in os.listdir(os.path.join(current_dir, "cogs")):
 		if cog.endswith(".py"):
 			extensions.append(f"cogs.{cog[:-3]}")
 
