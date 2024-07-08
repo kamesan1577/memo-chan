@@ -27,9 +27,7 @@ class CreateNewTags(commands.Cog):
                 await custom_contents.send_embed_info(interaction, 'タグリスト', 'すべてのタグが既に存在します。')
         created_tags = {}
         for tag in tag_dict:
-            if tag_dict[tag]:
-                continue
-            elif not tag_dict[tag]:
+            if tag_dict[tag] == False:
                 new_channel = await guild.create_text_channel(tag)
                 created_tags[tag] = new_channel.id
         # メッセージ作成
