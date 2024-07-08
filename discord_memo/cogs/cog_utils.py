@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 import discord
 from discord.ext import commands
 
-from ..db.crud import create_tag
+from discord_memo.db.crud import create_tag
 
 class CreateNewTagandChannel(commands.Cog):
     """タグとチャンネルを新規作成"""
