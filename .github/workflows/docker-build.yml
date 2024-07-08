@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - "main"
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - '.gitignore'
+      - 'LICENSE'
+      - '.github/**'
+      - '.env*'
 
 jobs:
   build:
