@@ -2,13 +2,13 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-class CreateNewTags(commands.Cog):
+class CreateTags(commands.Cog):
     """タグを新規作成"""
     def __init__(self, bot):
         self.bot = bot
 
     @app_commands.command(name='create_tag', description='タグを新規作成します。')
-    async def create_new_tag(self, interaction: discord.Interaction, *, tags: str):
+    async def create_tag(self, interaction: discord.Interaction, *, tags: str):
         custom_contents = self.bot.get_cog('CustomContents')
         tag_list = tags.split()
         tag_dict = {tag: None for tag in tag_list}
@@ -36,4 +36,4 @@ class CreateNewTags(commands.Cog):
             await custom_contents.send_embed_info(interaction, 'タグリスト', f'{created_channels} を作成しました。')
 
 async def setup(bot):
-    await bot.add_cog(CreateNewTags(bot))
+    await bot.add_cog(CreateTags(bot))
