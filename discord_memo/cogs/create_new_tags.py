@@ -20,10 +20,10 @@ class CreateNewTags(commands.Cog):
         # ない場合False
         """
         タグ検索する処理
-        一旦全部True
+        一旦全部False
         """
         for tag in tag_dict:
-            tag_dict[tag] = True
+            tag_dict[tag] = False
         print(tag_dict)
         # タグすべてがある場合
         print(all(tag_dict.values()))
@@ -41,8 +41,10 @@ class CreateNewTags(commands.Cog):
             elif not tag_dict[tag]:
                 new_channel = await guild.create_text_channel(tag)
                 created_tags[tag] = new_channel.id
+        # メッセージ作成
         if custom_contents:
-            await custom_contents.send_embed_info(interaction, 'タグリスト', f'新規作成したタグとチャンネルID:{created_tags}')
+            created_channels = ' '.join([f"<#{channel_id}>" for channel_id in created_tags.values()])
+            await custom_contents.send_embed_info(interaction, 'タグリスト', f'{created_channels} を作成しました。')
 
 async def setup(bot):
     await bot.add_cog(CreateNewTags(bot))
