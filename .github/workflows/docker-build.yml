@@ -37,6 +37,7 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Create requirements.txt
+        push_options: --force
 
   build:
     runs-on: ubuntu-latest
