@@ -1,16 +1,14 @@
-FROM python:3.11-buster
+FROM python:3.11-slim
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /src
 
-RUN pip install poetry
+COPY ./ ./discord-memo
 
-RUN git clone --depth 1 https://github.com/kamesan1577/geek-camp-vol8.git
-WORKDIR /src/geek-camp-vol8
-ENV PYTHONPATH="/src/geek-camp-vol8/"
+WORKDIR /src/discord-memo
+ENV PYTHONPATH="/src/discord-memo/"
 
-RUN poetry config virtualenvs.in-project true
-RUN if [ -f pyproject.toml ]; then poetry install --no-root; fi
+RUN pip install -r requirements.txt
 
 # start discord server 
-ENTRYPOINT ["poetry", "run", "python3", "/src/geek-camp-vol8/discord_memo/main.py" ]
+ENTRYPOINT ["python3", "/src/discord-memo/discord_memo/main.py" ]
