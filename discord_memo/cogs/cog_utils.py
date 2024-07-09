@@ -17,11 +17,11 @@ class CreateNewTagandChannel(commands.Cog):
                 guild: discord.guild: サーバー
                 tag_name: str: タグ名
             Returns:
-                channel_id: int: 新規作成したチャンネルのID
+                discord.TextChannel: 作成したチャンネル
             """
             new_channel = await guild.create_text_channel(tag_name)
             await create_tag(db, new_channel.id, tag_name)
-            return new_channel.id
+            return new_channel
         
 async def setup(bot):
     await bot.add_cog(CreateNewTagandChannel(bot))
