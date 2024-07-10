@@ -116,11 +116,11 @@ def get_tag2messages(db: Session, skip: int = 0, limit: int = 100):
 	return db.query(Tag2Message).offset(skip).limit(limit).all()
 
 
-
 def get_tags_by_name(db: Session, name: str, skip: int = 0, limit: int = 100):
-    return (
-        db.query(Tag).filter(Tag.name.like(f"%{name}%")).offset(skip).limit(limit).all()
-    )
+	return (
+		db.query(Tag).filter(Tag.name.like(f"%{name}%")).offset(skip).limit(limit).all()
+	)
+
 
 def delete_tag2message(db: Session, tag2message_id: int):
 	db_tag2message = (
