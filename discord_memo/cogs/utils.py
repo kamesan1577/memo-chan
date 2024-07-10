@@ -13,11 +13,6 @@ async def create_tag_and_channel(guild: discord.Guild, tag_name: str, db: Sessio
         discord.TextChannel: 作成したチャンネル
     """
     try:
-        # タグが既に存在するか確認
-        existing_tags = get_tags_by_name(db, tag_name)
-        if existing_tags:
-            return None  # タグが既に存在する場合はNoneを返す
-
         # 新しいチャンネルを作成
         new_channel = await guild.create_text_channel(tag_name)
         create_tag(db, new_channel.id, tag_name)
