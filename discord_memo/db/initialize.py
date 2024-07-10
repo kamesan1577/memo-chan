@@ -4,6 +4,7 @@ from discord_memo.db import models, crud
 
 
 if __name__ == "__main__":
+	Base.metadata.create_all(bind=engine)
 	crud.create_tag(SessionLocal(), channel_id=1, name="hoge")
 	crud.create_tag(SessionLocal(), channel_id=1, name="fuga")
 	print(crud.get_tags(SessionLocal()))
@@ -16,3 +17,4 @@ if __name__ == "__main__":
 	crud.delete_tag(SessionLocal(), 1)
 	print(crud.get_tag(SessionLocal(), 1))
 	print(crud.get_tags(SessionLocal()))
+
