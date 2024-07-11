@@ -6,6 +6,8 @@ import discord.utils
 
 from discord_memo.db.database import SessionLocal
 from discord_memo.db.crud import create_tag, get_tags_by_name, get_tag
+from typing import Literal
+
 
 async def create_tag_and_channel(guild: discord.Guild, tag_name: list):
     """新規でタグとチャンネルを作成
@@ -26,12 +28,13 @@ async def create_tag_and_channel(guild: discord.Guild, tag_name: list):
     for tag in tag_name:
         db = SessionLocal()
         try:
+            tag_type = get_tag_type(tag)
             print("Processing tag:", tag)
             # 既存タグの場合
             # <#\d+>が来た場合
-            if re.match(r'<#\d+>', tag):
+            if tag_type == "existing_tag":
                 print("Processing created tag in Discord:", tag)
-                channel_id = int(tag.strip('<#>'))
+                channel_id = int(tag.strip("<#>"))
                 # タグがDBに存在しない場合登録
                 print(get_tag(db, channel_id))
                 if not get_tag(db, channel_id):
@@ -46,11 +49,11 @@ async def create_tag_and_channel(guild: discord.Guild, tag_name: list):
                 created_tags[tag_db.name] = guild.get_channel(tag_db.channel_id)
             # タグ新規作成
             # #が最初に来る場合
-            elif re.match(r'#\d+', tag):
+            elif tag_type == "new_tag":
                 print("Processing new tag:", tag)
                 # 新しいチャンネルを作成
                 # #を削除
-                tag = tag.lstrip('#')
+                tag = tag.lstrip("#")
                 new_channel = await guild.create_text_channel(tag)
                 # DBに登録
                 create_tag(db, new_channel.id, tag)
@@ -70,3 +73,12 @@ async def create_tag_and_channel(guild: discord.Guild, tag_name: list):
     print(f"created tags:{created_tags}")
     print(f"new tags:{new_tags}")
     return created_tags, new_tags
+
+
+def get_tag_type(text: str) -> Literal["new_tag", "existing_tag", "invalid_tag"]:
+    if re.match(r"<#\d+>", text):
+        return "existing_tag"
+    elif re.match(r"#\d+", text):
+        return "new_tag"
+    else:
+        return "invalid_tag"
