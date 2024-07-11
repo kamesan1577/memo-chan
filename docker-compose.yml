@@ -1,10 +1,21 @@
-version: "3"
-
 services:
     discord-memo:
-        container_name: discord-memo
+        container_name: discord-memo-dev
         tty: true
+
         build:
           context: .
           dockerfile: Dockerfile
+
+        develop:
+            watch:
+              - action: sync
+                path: ./discord_memo
+                target: /src/discord_memo
+              - action: rebuild
+                path:  pyproject.toml
+              - action: rebuild
+                path:  ./discord_memo/
         env_file: .env
+        # volumes: 
+        #     - ./discord_memo:/src/discord_memo

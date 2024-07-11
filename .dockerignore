@@ -4,3 +4,5 @@
 # Allow files
 !discord_memo/**
 !requirements.txt
+!pyproject.toml
+!poetry.lock
