@@ -17,5 +17,3 @@ services:
               - action: rebuild
                 path:  ./discord_memo/
         env_file: .env
-        # volumes: 
-        #     - ./discord_memo:/src/discord_memo
