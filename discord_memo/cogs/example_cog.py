@@ -26,5 +26,12 @@ class ExampleCog(commands.Cog):
         if custom_contents:
             await custom_contents.send_embed_info(interaction, 'Info', 'This is an Info message.')
 
+    @app_commands.command(name='return_message')
+    async def send_info(self, interaction: discord.Interaction, message: str):
+        print(message)
+        custom_contents = self.bot.get_cog('CustomContents')
+        if custom_contents:
+            await custom_contents.send_embed_info(interaction, 'Info', message)
+
 async def setup(bot):
     await bot.add_cog(ExampleCog(bot))
