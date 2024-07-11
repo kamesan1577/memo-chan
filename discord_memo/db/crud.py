@@ -17,7 +17,7 @@ def create_tag(db: Session, channel_id: int, name: str):
 
 
 def get_tag(db: Session, tag_id: int):
-	return db.query(Tag).filter(Tag.id == tag_id).first()
+	return db.query(Tag).filter(Tag.channel_id == tag_id).first()
 
 
 def get_tags(db: Session, skip: int = 0, limit: int = 100):
@@ -25,7 +25,7 @@ def get_tags(db: Session, skip: int = 0, limit: int = 100):
 
 
 def update_tag(db: Session, tag_id: int, name: str):
-	db_tag = db.query(Tag).filter(Tag.id == tag_id).first()
+	db_tag = db.query(Tag).filter(Tag.channel_id == tag_id).first()
 	if db_tag:
 		db_tag.name = name
 		db_tag.updated_at = datetime.utcnow()
@@ -35,7 +35,7 @@ def update_tag(db: Session, tag_id: int, name: str):
 
 
 def delete_tag(db: Session, tag_id: int):
-	db_tag = db.query(Tag).filter(Tag.id == tag_id).first()
+	db_tag = db.query(Tag).filter(Tag.channel_id == tag_id).first()
 	if db_tag:
 		db_tag.is_deleted = True
 		db.commit()

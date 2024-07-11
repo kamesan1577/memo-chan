@@ -21,6 +21,6 @@ build-backend = "poetry.core.masonry.api"
 lint.ignore = ["F401","F841"]
 lint.unfixable = ["F401","F841"]
 format.quote-style = "double"
-format.indent-style = "tab"
+format.indent-style = "space"
 
 
