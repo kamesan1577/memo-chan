@@ -5,7 +5,7 @@ import discord
 from discord_memo.db.database import SessionLocal
 from discord_memo.db.crud import create_tag, get_tags_by_name, get_tag
 
-async def create_tag_and_channel(guild: discord.Guild, tag_name: list, db: Session):
+async def create_tag_and_channel(guild: discord.Guild, tag_name: list):
     """新規でタグとチャンネルを作成
     タグが存在するか確認し、存在しなかったら新規作成。
     Discord側を基準とするため以下条件の場合DBに登録
@@ -14,7 +14,6 @@ async def create_tag_and_channel(guild: discord.Guild, tag_name: list, db: Sessi
     Args:
         guild: discord.Guild: サーバー
         tag_name: list: タグ名(<#\d+> #tag tag どの表記でも対応)
-        db: Session: DBセッション
     Returns:
         created_tags: dict: {"channel_name" : discord.TextChannel, ...}作成したチャンネル
         new_tags: dict: {"channel_name" : discord.TextChannel, ...} 新規作成したタグ
