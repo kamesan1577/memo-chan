@@ -23,62 +23,48 @@ async def create_tag_and_channel(guild: discord.Guild, tag_name: list):
         created_tags: dict: {"channel_name" : discord.TextChannel, ...} : 作成したチャンネル
         new_tags: dict: {"channel_name" : discord.TextChannel, ...} : 新規作成したタグ
     """
+    print("create_tag_and_channel called with tags:", tag_name)
     created_tags = {}
     new_tags = {}
     for tag in tag_name:
+        print("Proccesing tag:", tag)
         db = SessionLocal()
         try:
             tag_type = get_tag_type(tag)
-            print("Processing tag:", tag)
-            # 既存タグの場合
-            # <#\d+>が来た場合
+            # 形式が<#\d+>の場合
             if tag_type == "existing_tag":
-                print("Processing created tag in Discord:", tag)
-                channel_id = int(tag.strip("<#>"))
-                # タグがDBに存在しない場合登録
-                print(get_tag(db, channel_id))
-                if not get_tag(db, channel_id):
-                    print("Tag not found in DB, creating tag for channel:", channel_id)
-                    channel_name = guild.get_channel(channel_id).name
-                    create_tag(db, channel_id, channel_name)
-                    print("Created tag for channel:", channel_name)
-                created_tags[tag] = guild.get_channel(channel_id)
-            elif get_tags_by_name(db, tag):
-                print("Processing created tag in DB:", tag)
-                tag_db = get_tags_by_name(db, tag)[0]
-                created_tags[tag_db.name] = guild.get_channel(tag_db.channel_id)
-            # タグ新規作成
-            # #が最初に来る場合
+                # タグがDBに存在しない場合
+                if not get_tag(db, int(tag.strip("<#>"))):
+                    print("Tag not found in DB, creating tag")
+                    new_tag = create_tag(db, int(tag.strip("<#>")), tag)
+                    new_tags[tag] = guild.get_channel(new_tag.channel_id)
+                # タグがDBに存在する場合
+                else:
+                    print("Tag found in DB")
+                    created_tags[tag] = guild.get_channel(int(tag.strip("<#>")))
+            # 形式が#\d+の場合
             elif tag_type == "new_tag":
-                print("Processing new tag:", tag)
-                # 新しいチャンネルを作成
-                # #を削除
-                tag = tag.lstrip("#")
-                new_channel = await guild.create_text_channel(tag)
-                # DBに登録
-                create_tag(db, new_channel.id, tag)
+                tag_name = tag.lstrip("#")
+                # Discordにチャンネル新規作成
+                new_channel = await guild.create_text_channel(tag_name)
+                # DBに新規作成
+                new_tag = create_tag(db, new_channel.id, tag_name)
                 new_tags[tag] = new_channel
-                print("Created new channel:", new_channel.name)
-            # 文字列だけの場合
-            else:
-                print("Processing new tag:", tag)
-                new_channel = await guild.create_text_channel(tag)
-                create_tag(db, new_channel.id, tag)
-                new_tags[tag] = new_channel
-                print("Created new channel:", new_channel.name)
+            # 形式が不正の場合
+            elif tag_type == "invalid_tag":
+                print("Invalid tag format")
+                continue
         except Exception as e:
             print("Error creating tag and channel for tag:", tag, e)
         finally:
             db.close()
-    print(f"created tags:{created_tags}")
-    print(f"new tags:{new_tags}")
     return created_tags, new_tags
 
 
 def get_tag_type(text: str) -> Literal["new_tag", "existing_tag", "invalid_tag"]:
     if re.match(r"<#\d+>", text):
         return "existing_tag"
-    elif re.match(r"#\d+", text):
+    elif re.match(r"#.+", text):
         return "new_tag"
     else:
         return "invalid_tag"
