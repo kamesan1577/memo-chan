@@ -159,6 +159,14 @@ def create_message_group(db: Session, message_id: int):
     return db_message_group
 
 
+def add_to_message_group(db: Session, message_id: int, group_id: int):
+    db_message_group = MessageGroup(message_id=message_id, group_id=group_id)
+    db.add(db_message_group)
+    db.commit()
+    db.refresh(db_message_group)
+    return db_message_group
+
+
 def get_message_group(db: Session, group_id: int):
     return db.query(MessageGroup).filter(MessageGroup.group_id == group_id).first()
 
