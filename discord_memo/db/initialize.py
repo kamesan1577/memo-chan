@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from discord_memo.db.database import SessionLocal, engine
 from discord_memo.db import models, crud
-
+from .database import Base
 
 if __name__ == "__main__":
 	Base.metadata.create_all(bind=engine)
