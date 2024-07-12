@@ -2,10 +2,10 @@ import asyncio
 import discord
 import os
 from discord.ext import commands
+from discord_memo.db.database import Base, engine
 from discord_memo import config
 
 intents = discord.Intents.default()
-
 
 async def main():
 	extensions = []
@@ -35,4 +35,5 @@ async def main():
 
 
 if __name__ == "__main__":
+	Base.metadata.create_all(bind=engine)
 	asyncio.run(main())
