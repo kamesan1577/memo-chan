@@ -29,7 +29,7 @@ class CreateTags(commands.Cog):
         else:
             if custom_contents:
                 await custom_contents.send_embed_info(
-                    interaction, "タグリスト", "存在するタグです。"
+                    interaction, "タグリスト", "存在するタグ、もしくは無効な書式です。(/create_tag #tag)"
                 )
 
 
