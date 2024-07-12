@@ -37,6 +37,7 @@ async def create_tag_and_channel(guild: discord.Guild, tag_name: list):
                 if not get_tag(db, int(tag.strip("<#>"))):
                     print("Tag not found in DB, creating tag")
                     new_tag = create_tag(db, int(tag.strip("<#>")), tag)
+                    print("New tag is:", new_tag)
                     new_tags[tag] = guild.get_channel(new_tag.channel_id)
                 # タグがDBに存在する場合
                 else:
@@ -44,12 +45,20 @@ async def create_tag_and_channel(guild: discord.Guild, tag_name: list):
                     created_tags[tag] = guild.get_channel(int(tag.strip("<#>")))
             # 形式が#\d+の場合
             elif tag_type == "new_tag":
+                # Discord側にすでにチャンネルが存在する場合DBだけに登録
+                if discord.utils.get(guild.text_channels, name=tag.lstrip("#")):
+                    print("Tag already exists in Discord")
+                    new_tag = create_tag(db, discord.utils.get(guild.text_channels, name=tag.lstrip("#")).id, tag)
+                    print("New tag is:", new_tag)
+                    new_tags[tag.lstrip("#")] = guild.get_channel(new_tag.channel_id)
+                    continue
                 tag_name = tag.lstrip("#")
                 # Discordにチャンネル新規作成
                 new_channel = await guild.create_text_channel(tag_name)
                 # DBに新規作成
                 new_tag = create_tag(db, new_channel.id, tag_name)
-                new_tags[tag] = new_channel
+                print("New tag is:", new_tag)
+                new_tags[tag.lstrip("#")] = new_channel
             # 形式が不正の場合
             elif tag_type == "invalid_tag":
                 print("Invalid tag format")
@@ -58,6 +67,8 @@ async def create_tag_and_channel(guild: discord.Guild, tag_name: list):
             print("Error creating tag and channel for tag:", tag, e)
         finally:
             db.close()
+    print("Created tags:", created_tags)
+    print("New tags:", new_tags)
     return created_tags, new_tags
 
 
