@@ -35,7 +35,10 @@ class Tag(Base):
         server_default=func.now(),
         comment="更新日時",
     )
-    is_deleted = Column("is_deleted", Boolean, nullable=False, default=False, comment="削除フラグ")
+    is_deleted = Column(
+        "is_deleted", Boolean, nullable=False, default=False, comment="削除フラグ"
+    )
+
 
 class Message(Base):
     __tablename__ = "message"
@@ -48,7 +51,9 @@ class Message(Base):
         nullable=False,
         comment="メッセージID",
     )
-    is_binary_data = Column("is_binary_data", Boolean, nullable=False, comment="Isバイナリデータ")
+    is_binary_data = Column(
+        "is_binary_data", Boolean, nullable=False, comment="Isバイナリデータ"
+    )
     image_link = Column("image_link", String(255), nullable=True, comment="画像リンク")
     last_updated_at = Column(
         "last_updated_at",
@@ -65,28 +70,74 @@ class Message(Base):
         comment="作成日時",
     )
     content = Column("content", Text, nullable=True, comment="メッセージのText")
-    message_link = Column("message_link", String(255), nullable=True, comment="メッセージリンク")
-    is_deleted = Column("is_deleted", Boolean, nullable=False, default=False, comment="削除フラグ")
+    message_link = Column(
+        "message_link", String(255), nullable=True, comment="メッセージリンク"
+    )
+    is_deleted = Column(
+        "is_deleted", Boolean, nullable=False, default=False, comment="削除フラグ"
+    )
 
     tags = relationship("Tag", secondary="tag2message", backref="messages")
+    binary_data_entries = relationship("BinaryData", back_populates="message")
+    image_links = relationship("ImageLink", back_populates="message")
+
+
+class BinaryData(Base):
+    __tablename__ = "binary_data"
+    id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
+    message_id = Column("message_id", Integer, ForeignKey("message.id"), nullable=False)
+    is_binary_data = Column(
+        "is_binary_data", Boolean, nullable=False, comment="Isバイナリデータ"
+    )
+    message = relationship("Message", back_populates="binary_data_entries")
+
+
+class ImageLink(Base):
+    __tablename__ = "image_link"
+    id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
+    message_id = Column("message_id", Integer, ForeignKey("message.id"), nullable=False)
+    image_link = Column("image_link", String(255), nullable=False, comment="画像リンク")
+    message = relationship("Message", back_populates="image_links")
+
 
 class Tag2Message(Base):
     __tablename__ = "tag2message"
     __table_args__ = {"comment": "tag2messageテーブル"}
 
     id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
-    tag_id = Column("tag_id", Integer, ForeignKey("tag.id"), nullable=False, comment="タグID")
-    db_message_id = Column("message_id", Integer, ForeignKey("message.id"), nullable=False, comment="DBのメッセージID")
-    discord_message_id = Column("discord_message_id", Integer, nullable=False, comment="DiscordのメッセージID")
+    tag_id = Column(
+        "tag_id", Integer, ForeignKey("tag.id"), nullable=False, comment="タグID"
+    )
+    db_message_id = Column(
+        "message_id",
+        Integer,
+        ForeignKey("message.id"),
+        nullable=False,
+        comment="DBのメッセージID",
+    )
+    discord_message_id = Column(
+        "discord_message_id", Integer, nullable=False, comment="DiscordのメッセージID"
+    )
     channel_id = Column("channel_id", Integer, nullable=False, comment="チャンネルID")
-    group_id = Column("group_id", Integer, nullable=False, default=0, comment="グループID")
+    group_id = Column(
+        "group_id", Integer, nullable=False, default=0, comment="グループID"
+    )
+
 
 class MessageGroup(Base):
     __tablename__ = "message_group"
     __table_args__ = {"comment": "message_groupテーブル"}
 
-    group_id = Column("group_id", Integer, primary_key=True, index=True, autoincrement=True)
-    message_id = Column("message_id", Integer, ForeignKey("message.id"), nullable=False, comment="メッセージID")
+    group_id = Column(
+        "group_id", Integer, primary_key=True, index=True, autoincrement=True
+    )
+    message_id = Column(
+        "message_id",
+        Integer,
+        ForeignKey("message.id"),
+        nullable=False,
+        comment="メッセージID",
+    )
     created_at = Column(
         "created_at",
         DateTime,
@@ -101,6 +152,7 @@ class MessageGroup(Base):
         server_default=func.now(),
         comment="更新日時",
     )
+
 
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine)
