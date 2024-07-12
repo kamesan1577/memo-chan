@@ -148,7 +148,9 @@ def get_tag2messages(db: Session, skip: int = 0, limit: int = 100):
 
 def get_tags_by_name(db: Session, name: str, skip: int = 0, limit: int = 100):
     return (
-        db.query(Tag).filter(Tag.name.like(f"%{name}%")).offset(skip).limit(limit).all()
+        db.query(Tag)
+        .filter(Tag.name == name, Tag.is_deleted == False)
+        .offset(skip).limit(limit).all()
     )
 
 
