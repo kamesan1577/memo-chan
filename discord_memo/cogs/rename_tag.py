@@ -57,5 +57,18 @@ class RenameTags(commands.Cog):
         finally:
             db.close()
 
+    @commands.Cog.listener()
+    async def on_guild_channel_update(self, before: discord.abc.GuildChannel, after: discord.abc.GuildChannel):
+        if before.name != after.name:
+            print(f"Channel renamed from {before.name} to {after.name}")
+            db = SessionLocal()
+            try:
+                update_tag(db, after.id, after.name)
+                print(f"Updated tag for channel {after.id} in database.")
+            except Exception as e:
+                print(f"Error updating tag for channel {after.id}: {e}")
+            finally:
+                db.close()
+
 async def setup(bot):
     await bot.add_cog(RenameTags(bot))
