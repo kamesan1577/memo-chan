@@ -45,6 +45,14 @@ class Message(Base):
     __table_args__ = {"comment": "messageテーブル"}
 
     id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
+    message_id = Column(
+        "message_id",
+        Integer,
+        nullable=False,
+        comment="メッセージID",
+    )
+    is_binary_data = Column("is_binary_data", Boolean, nullable=False, comment="Isバイナリデータ")
+    image_link = Column("image_link", String(255), nullable=True, comment="画像リンク")
     last_updated_at = Column(
         "last_updated_at",
         DateTime,
@@ -95,16 +103,9 @@ class Tag2Message(Base):
     __table_args__ = {"comment": "tag2messageテーブル"}
 
     id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
-    tag_id = Column(
-        "tag_id", Integer, ForeignKey("tag.id"), nullable=False, comment="タグID"
-    )
-    message_id = Column(
-        "message_id",
-        Integer,
-        ForeignKey("message.id"),
-        nullable=False,
-        comment="メッセージID",
-    )
+    tag_id = Column("tag_id", Integer, ForeignKey("tag.id"), nullable=False, comment="タグID")
+    db_message_id = Column("message_id", Integer, ForeignKey("message.id"), nullable=False, comment="DBのメッセージID")
+    discord_message_id = Column("discord_message_id", Integer, nullable=False, comment="DiscordのメッセージID")
     channel_id = Column("channel_id", Integer, nullable=False, comment="チャンネルID")
     group_id = Column(
         "group_id", Integer, nullable=False, default=0, comment="グループID"
