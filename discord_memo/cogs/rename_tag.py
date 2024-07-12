@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../') # dbディレクト読み込みのため入れてる
+sys.path.append('../')  # dbディレクト読み込みのため入れてる
 
 import discord
 from discord import app_commands
@@ -34,15 +34,11 @@ class RenameTags(commands.Cog):
                 await custom_contents.send_embed_error(interaction, 'エラー', '修正するタグの形式が正しくありません。')
             return
 
-        if tag_old_type == "new_tag" or tag_old_type == "invalid_tag":
+        # 条件を「tag_oldが'existing_tag'かつtag_newが'new_tag'である場合」に修正
+        if tag_old_type != "existing_tag" or tag_new_type != "new_tag":
             if custom_contents:
-                await custom_contents.send_embed_error(interaction, 'エラー', '修正するタグが存在しません。')
-                return
-
-        if tag_new_type == "existing_tag":
-            if custom_contents:
-                await custom_contents.send_embed_error(interaction, 'エラー', '指定した新しいタグはすでに存在するタグです。')
-                return
+                await custom_contents.send_embed_error(interaction, 'エラー', 'タグの形式が正しくありません。')
+            return
 
         tag_new = tag_new.lstrip("#")
 
