@@ -15,40 +15,38 @@ class DeleteTags(commands.Cog):
         db = SessionLocal()
         try:
             tag = crud.get_tag(db, tag_id)
-            if not tag or tag.is_deleted:
+            if not tag:
                 print(f"Tag not found or already deleted: {tag_id}")
                 return None
 
+            # タグの論理削除を実行
             deleted_tag = crud.delete_tag(db, tag_id)
             print(f"Tag deleted: {deleted_tag}")
+
+            # チャンネルの削除を試みる
+            try:
+                channel = self.bot.get_channel(deleted_tag.channel_id)
+                if channel:
+                    await channel.delete(reason="Associated tag was deleted")
+                    print(f"Channel deleted: {deleted_tag.channel_id}")
+                else:
+                    print(f"Channel not found: {deleted_tag.channel_id}")
+            except Exception as e:
+                print(f"Error deleting channel: {e}")
+                # db.rollback()
+                return None
+            else:
+                # db.commit()
+                return deleted_tag
         except Exception as e:
             print(f"Error deleting tag: {e}")
+            # db.rollback()
             return None
         finally:
             db.close()
 
-        if deleted_tag.is_deleted:
-            try:
-                guild = self.bot.get_guild(deleted_tag.guild_id)
-                if guild:
-                    channel = guild.get_channel(deleted_tag.channel_id)
-                    if channel:
-                        await channel.delete(reason="Associated tag was deleted")
-                        print(f"Channel deleted: {deleted_tag.channel_id}")
-                    else:
-                        print(f"Channel not found: {deleted_tag.channel_id}")
-                else:
-                    print(f"Guild not found: {deleted_tag.guild_id}")
-            except Exception as e:
-                print(f"Error deleting channel: {e}")
-                return None
-            return deleted_tag
-        else:
-            print(f"Failed to delete tag with ID: {tag_id}")
-            return None
-
     # コマンドによるチャンネル削除時
-    @app_commands.command(name="delete_tag")
+    @app_commands.command(name="delete_tag", description="タグを削除します。")
     async def delete_tag_command(self, interaction: discord.Interaction, tag_name: str):
         await interaction.response.defer()
         custom_contents = self.bot.get_cog("CustomContents")
