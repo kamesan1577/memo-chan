@@ -78,7 +78,7 @@ async def create_tag_and_channel(guild: discord.Guild, tag_name: list):
 def get_tag_type(text: str) -> Literal["new_tag", "existing_tag", "invalid_tag"]:
     if re.match(r"<#\d+>", text):
         return "existing_tag"
-    elif re.match(r"#\d+", text):
+    elif re.match(r"#\w+", text):
         return "new_tag"
     else:
         return "invalid_tag"
