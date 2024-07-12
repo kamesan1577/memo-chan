@@ -2,7 +2,14 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from discord_memo.db.models import Message, MessageGroup, Tag, Tag2Message
+from discord_memo.db.models import (
+    Message,
+    MessageGroup,
+    Tag,
+    Tag2Message,
+    BinaryData,
+    ImageLink,
+)
 
 from discord_memo.db.database import SessionLocal
 
@@ -48,17 +55,28 @@ def delete_tag(db: Session, tag_id: int):
 
 # MessageのCRUD操作
 def create_message(
-    db: Session, is_binary_data: bool, image_link: str, content: str, message_link: str
+    db: Session,
+    content: str,
+    message_link: str,
+    binary_data_list: list,
+    image_links_list: list,
 ):
-    db_message = Message(
-        is_binary_data=is_binary_data,
-        image_link=image_link,
-        content=content,
-        message_link=message_link,
-    )
+    db_message = Message(content=content, message_link=message_link)
     db.add(db_message)
     db.commit()
     db.refresh(db_message)
+
+    for binary_data in binary_data_list:
+        db_binary_data = BinaryData(
+            message_id=db_message.id, is_binary_data=binary_data
+        )
+        db.add(db_binary_data)
+
+    for link in image_links_list:
+        db_image_link = ImageLink(message_id=db_message.id, image_link=link)
+        db.add(db_image_link)
+
+    db.commit()
     return db_message
 
 
@@ -84,8 +102,9 @@ def update_message(
     db: Session,
     message_id: int,
     content: str = None,
-    image_link: str = None,
     message_link: str = None,
+    binary_data_list: list = None,
+    image_links_list: list = None,
 ):
     db_message = (
         db.query(Message)
@@ -95,11 +114,24 @@ def update_message(
     if db_message:
         if content is not None:
             db_message.content = content
-        if image_link is not None:
-            db_message.image_link = image_link
         if message_link is not None:
             db_message.message_link = message_link
         db_message.last_updated_at = datetime.now()
+
+        if binary_data_list is not None:
+            db.query(BinaryData).filter(BinaryData.message_id == message_id).delete()
+            for binary_data in binary_data_list:
+                db_binary_data = BinaryData(
+                    message_id=message_id, is_binary_data=binary_data
+                )
+                db.add(db_binary_data)
+
+        if image_links_list is not None:
+            db.query(ImageLink).filter(ImageLink.message_id == message_id).delete()
+            for link in image_links_list:
+                db_image_link = ImageLink(message_id=message_id, image_link=link)
+                db.add(db_image_link)
+
         db.commit()
         db.refresh(db_message)
     return db_message
