@@ -68,26 +68,18 @@ class Message(Base):
     )
 
     tags = relationship("Tag", secondary="tag2message", backref="messages")
-    binary_data_entries = relationship("BinaryData", back_populates="message")
-    image_links = relationship("ImageLink", back_populates="message")
+    file_entries = relationship("FileEntry", back_populates="message")
 
 
-class BinaryData(Base):
-    __tablename__ = "binary_data"
+class FileEntry(Base):
+    __tablename__ = "file_entry"
     id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
     message_id = Column("message_id", Integer, ForeignKey("message.id"), nullable=False)
     is_binary_data = Column(
         "is_binary_data", Boolean, nullable=False, comment="Isバイナリデータ"
     )
-    message = relationship("Message", back_populates="binary_data_entries")
-
-
-class ImageLink(Base):
-    __tablename__ = "image_link"
-    id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
-    message_id = Column("message_id", Integer, ForeignKey("message.id"), nullable=False)
     image_link = Column("image_link", String(255), nullable=False, comment="画像リンク")
-    message = relationship("Message", back_populates="image_links")
+    message = relationship("Message", back_populates="file_entries")
 
 
 class Tag2Message(Base):
