@@ -4,7 +4,7 @@ import os
 from discord.ext import commands
 from discord_memo.db.database import Base, engine
 
-from discord_memo.db.models import Tag, Message, FileEntry, Tag2Message, MessageGroup
+from discord_memo.db import models
 from discord_memo import config
 
 intents = discord.Intents.default()
