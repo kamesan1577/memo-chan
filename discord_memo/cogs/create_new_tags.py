@@ -7,7 +7,9 @@ from discord.ext import commands
 
 
 from discord_memo.utils.create_tag_and_channel import create_tag_and_channel
-
+from discord_memo.utils.fetch_memo_category import fetch_memo_category
+from discord_memo.utils.sync_memo_channels import sync_memo_channels
+from discord_memo import config
 
 
 class CreateTags(commands.Cog):
@@ -24,9 +26,14 @@ class CreateTags(commands.Cog):
     async def create_tag_util(self, interaction: discord.Interaction, tags: str):
         print("create_tag command called with tags:", tags)
         custom_contents = self.bot.get_cog("CustomContents")
+        # discordとDBとの同期関係
+        await sync_memo_channels(interaction)
+        category_id = await fetch_memo_category(interaction)
+
+
         tag_list = tags.split()
         created_tags, new_tags = await create_tag_and_channel(guild=interaction.guild, 
-                                                              category_id=None, 
+                                                              category_id=category_id, 
                                                               tag_name=tag_list)
         print(type(created_tags))
         print(type(new_tags))

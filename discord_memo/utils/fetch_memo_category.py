@@ -1,6 +1,7 @@
 import discord
+from discord_memo import config
 
-category_name = "memo-bot"
+category_name = config.CATEGORY_NAME
 
 async def fetch_memo_category(interaction: discord.Interaction) -> discord.CategoryChannel | None:
     """サーバー二存在するメモ用カテゴリのIDを取得
@@ -23,6 +24,7 @@ async def fetch_memo_category(interaction: discord.Interaction) -> discord.Categ
             return memo_category
         else:
             new_category = await guild.create_category(category_name, reason="メモ用カテゴリを作成しました。")
+            return new_category
     except:
         print("Error getting memo category")
         return None
