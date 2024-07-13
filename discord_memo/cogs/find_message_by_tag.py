@@ -3,13 +3,16 @@ from sqlalchemy.orm import Session
 
 from discord_memo.db.crud import get_tags_by_name, get_tag2messages, get_message
 from discord_memo.db.database import SessionLocal
+import discord
+from discord import app_commands
+from discord.ext import commands
 
 
 class FindMessageByTag(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="find_message_by_tag")
+    @app_commands.command(name="find_message_by_tag")
     async def find_message_by_tag(self, ctx, *, tag_name: str):
         db: Session = SessionLocal()
         try:
@@ -47,5 +50,5 @@ class FindMessageByTag(commands.Cog):
             db.close()
 
 
-def setup(bot):
-    bot.add_cog(FindMessageByTag(bot))
+async def setup(bot):
+    await bot.add_cog(FindMessageByTag(bot))
