@@ -8,6 +8,7 @@ from discord_memo.db import models
 from discord_memo import config
 
 intents = discord.Intents.default()
+intents.message_content = True
 
 
 async def main():
