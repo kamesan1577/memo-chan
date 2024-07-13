@@ -8,7 +8,6 @@ from discord.ext import commands
 from typing import Literal, List
 
 from discord_memo.db.schemas import FileEntryData, MessageData
-from discord_memo.db.crud import create_message_group, get_tags_by_name
 
 
 class MessageTools(commands.Cog):
