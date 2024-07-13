@@ -6,7 +6,8 @@ from discord import app_commands
 from discord.ext import commands
 
 from discord_memo.db.database import SessionLocal
-from discord_memo.cogs.utils import get_tag_type, create_tag_and_channel
+from discord_memo.utils.get_tag_type import get_tag_type
+from discord_memo.utils.create_tag_and_channel import create_tag_and_channel
 from discord_memo.db.crud import update_tag, get_tag
 
 class RenameTags(commands.Cog):
@@ -42,7 +43,9 @@ class RenameTags(commands.Cog):
 
         tag_new = tag_new.lstrip("#")
 
-        discordTextChannel, new_tag = await create_tag_and_channel(interaction.guild, [tag_old])
+        discordTextChannel, new_tag = await create_tag_and_channel(guild=interaction.guild, 
+                                                                   category_id=None,
+                                                                   tag_name=[tag_old])
         db = SessionLocal()
         try:
             print("Updating tag and channel for tag:", discordTextChannel[tag_old].id)
