@@ -8,11 +8,14 @@ from discord_memo.utils.message_tools import MessageTools
 
 
 class GroupMessages(commands.Cog):
+    MAX_MEMO_GROUP_LENGTH = 5000
+
     def __init__(self, bot):
         self.bot = bot
         self.message_tools = MessageTools(bot)
         self.memo_active = {}
         self.memo_group = {}
+        self.memo_group_length = {}
 
     @app_commands.command(name="memo_start", description="メモの記録を開始します。")
     async def memo_start(self, interaction: discord.Interaction):
@@ -24,6 +27,7 @@ class GroupMessages(commands.Cog):
             if key not in self.memo_active:
                 self.memo_active[key] = True
                 self.memo_group[key] = []
+                self.memo_group_length[key] = 0
                 print("memo_active:", key)
                 await custom_contents.send_embed_info(
                     interaction, "Info", "メモの記録を開始しました。"
@@ -47,9 +51,11 @@ class GroupMessages(commands.Cog):
             if key in self.memo_active:
                 print("memo_group:", self.memo_group[key])
                 self.memo_active.pop(key)
+                self.memo_group_length.pop(key)
                 await self.message_tools.add_message(
                     interaction, tags, self.memo_group[key]
                 )
+                self.memo_group.pop(key)
                 print("memo_deactive:", key)
                 await custom_contents.send_embed_info(
                     interaction, "Info", "メモの記録を終了しました。"
@@ -66,6 +72,20 @@ class GroupMessages(commands.Cog):
             return
         key = (message.author.id, message.guild.id)
         if key in self.memo_active:
+            message_length = len(message.content)
+            if (
+                self.memo_group_length[key] + message_length
+                > self.MAX_MEMO_GROUP_LENGTH
+            ):
+                await message.reply(
+                    f"メモの長さが{self.MAX_MEMO_GROUP_LENGTH}を超えました。\n文字数を減らしてください。"
+                )
+                return
+            self.memo_group_length[key] += message_length
+            await message.reply(
+                f"メモの長さ: {self.memo_group_length[key]} / {self.MAX_MEMO_GROUP_LENGTH}"
+            )
+
             await self.record_message(message)
 
     async def record_message(self, message: discord.Message):
