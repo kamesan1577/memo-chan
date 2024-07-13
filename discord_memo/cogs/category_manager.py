@@ -13,7 +13,7 @@ class CategoryManager(commands.Cog):
     @commands.has_permissions(manage_channels=True)
     async def fetch_memo_category(
         self, interaction: discord.Interaction
-    ) -> discord.CategoryChannel | Nones:
+    ) -> discord.CategoryChannel | None:
         """サーバーに存在するメモ用カテゴリのIDを取得
         もしカテゴリが存在しない場合は自動で作成する
 
