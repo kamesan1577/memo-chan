@@ -10,6 +10,9 @@ from discord_memo.utils.get_tag_type import get_tag_type
 from discord_memo.utils.create_tag_and_channel import create_tag_and_channel
 from discord_memo.utils.validator import is_valid_tag_name
 from discord_memo.db.crud import update_tag, get_tag
+from discord_memo.utils.fetch_memo_category import fetch_memo_category
+from discord_memo.utils.sync_memo_channels import sync_memo_channels
+
 
 class RenameTags(commands.Cog):
     """タグを修正"""
@@ -47,10 +50,14 @@ class RenameTags(commands.Cog):
                 await custom_contents.send_embed_error(interaction, 'エラー', 'タグの形式が正しくありません。')
             return
 
+        # discordとDBとの同期関係
+        await sync_memo_channels(interaction)
+        category_id = await fetch_memo_category(interaction)
+
         tag_new = tag_new.lstrip("#")
 
         dict_discordTextChannel, new_tag = await create_tag_and_channel(guild=interaction.guild, 
-                                                                   category_id=None,
+                                                                   category_id=category_id,
                                                                    tag_name=[tag_old])
         #TODO 処理が複雑化してるので直せたら直す
         discordTextChannel = dict_discordTextChannel[next(iter(dict_discordTextChannel))]
