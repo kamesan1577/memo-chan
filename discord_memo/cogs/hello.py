@@ -18,7 +18,6 @@ class Hello(commands.Cog):
     async def hello(self, interaction: discord.Interaction):
         await interaction.response.send_message("Hello!")
 
-
     @app_commands.command(name="hello_error", description="エラーデバッグ用")
     async def hello_error(self, interaction: discord.Interaction):
         try:
@@ -31,10 +30,11 @@ class Hello(commands.Cog):
             raise e
 
     @hello_error.error
-    async def raise_error_handler(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
+    async def raise_error_handler(
+        self, interaction: discord.Interaction, error: app_commands.AppCommandError
+    ):
         await self.error_handl.send_error(interaction, error)
 
-    
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Hello(bot))
