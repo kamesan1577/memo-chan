@@ -43,6 +43,7 @@ class CreateTags(commands.Cog):
                 await custom_contents.send_embed_info(
                     interaction, "タグリスト", "存在するタグです"
                 )
+        print("いえーーーーーーーーいう")
 
 
 

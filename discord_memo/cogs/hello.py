@@ -4,11 +4,14 @@ from discord.ext import commands
 
 from discord_memo.cogs.error_handler import ErrorHandler
 
+from discord_memo.cogs.utils import MessageTools
+
 
 class Hello(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.error_handl = ErrorHandler(bot)
+        self.add_message = MessageTools(bot)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -17,6 +20,13 @@ class Hello(commands.Cog):
     @app_commands.command(name="hello", description="Hello!")
     async def hello(self, interaction: discord.Interaction):
         await interaction.response.send_message("Hello!")
+
+    @app_commands.command(name="hello_db", description="Hello!")
+    async def hello_db(self, interaction: discord.Interaction, tag:str):
+        id_list = [1094025860752887908]
+        # tag = "#test"
+        await self.add_message.add_message(interaction, tag, id_list)
+
 
 
     @app_commands.command(name="hello_error", description="エラーデバッグ用")
