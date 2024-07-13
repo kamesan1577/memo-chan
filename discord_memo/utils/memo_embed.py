@@ -18,14 +18,7 @@ class MemoEmbed(commands.Cog):
 
     def create_embed(self, content:str, message_url:str, title:str=config.MEMO_TITLE)-> discord.Embed:
         embed = discord.Embed(title=title, color=self.color, description=content)
-        # embed.set_footer(text="[https://ptb.discord.com/channels/762233175669473290/762233175669473293/1094025351593730149")
-        # embed.add_field(
-        # name="",
-        # value="[元のメッセージ](https://ptb.discord.com/channels/762233175669473290/762233175669473293/1094025351593730149)",
-        # inline=False)
-        # embed.set_footer(icon_url="https://ptb.discord.com/channels/762233175669473290/762233175669473293/1094025351593730149")
         embed.url = message_url
-        # embed.timestamp=
         return embed
 
     
