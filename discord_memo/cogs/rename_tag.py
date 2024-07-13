@@ -6,7 +6,9 @@ from discord import app_commands
 from discord.ext import commands
 
 from discord_memo.db.database import SessionLocal
-from discord_memo.cogs.utils import get_tag_type, create_tag_and_channel
+from discord_memo.utils.get_tag_type import get_tag_type
+from discord_memo.utils.create_tag_and_channel import create_tag_and_channel
+from discord_memo.utils.validator import is_valid_tag_name
 from discord_memo.db.crud import update_tag, get_tag
 
 class RenameTags(commands.Cog):
@@ -28,6 +30,11 @@ class RenameTags(commands.Cog):
                 if custom_contents:
                     await custom_contents.send_embed_error(interaction, 'エラー', '修正するタグのチャンネルが存在しません。')
                 return
+            # バリデータ
+            if is_valid_tag_name(tag_new[1:]) is False:
+                if custom_contents:
+                    await custom_contents.send_embed_error(interaction, 'エラー', '修正するタグの形式が正しくありません。')
+                return
             tag_old_channel_name = tag_old_channel.name
         except ValueError:
             if custom_contents:
@@ -42,12 +49,16 @@ class RenameTags(commands.Cog):
 
         tag_new = tag_new.lstrip("#")
 
-        discordTextChannel, new_tag = await create_tag_and_channel(interaction.guild, [tag_old])
+        dict_discordTextChannel, new_tag = await create_tag_and_channel(guild=interaction.guild, 
+                                                                   category_id=None,
+                                                                   tag_name=[tag_old])
+        #TODO 処理が複雑化してるので直せたら直す
+        discordTextChannel = dict_discordTextChannel[next(iter(dict_discordTextChannel))]
         db = SessionLocal()
         try:
-            print("Updating tag and channel for tag:", discordTextChannel[tag_old].id)
-            update_tag(db, discordTextChannel[tag_old].id, tag_new)
-            new_channel = await discordTextChannel[tag_old].edit(name=tag_new)
+            print("Updating tag and channel for tag:", discordTextChannel.id)
+            update_tag(db, discordTextChannel.id, tag_new)  
+            new_channel = await discordTextChannel.edit(name=tag_new)
             if custom_contents:
                 await custom_contents.send_embed_info(interaction, 'タグリスト', f'{tag_old_channel_name} を <#{new_channel.id}> に修正しました。')
         except Exception as e:

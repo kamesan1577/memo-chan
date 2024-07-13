@@ -1,9 +1,12 @@
+import sys
+sys.path.append('../')
+
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 
-from .utils import create_tag_and_channel
+from discord_memo.utils.create_tag_and_channel import create_tag_and_channel
 
 
 
@@ -22,7 +25,9 @@ class CreateTags(commands.Cog):
         print("create_tag command called with tags:", tags)
         custom_contents = self.bot.get_cog("CustomContents")
         tag_list = tags.split()
-        created_tags, new_tags = await create_tag_and_channel(interaction.guild, tag_list)
+        created_tags, new_tags = await create_tag_and_channel(guild=interaction.guild, 
+                                                              category_id=None, 
+                                                              tag_name=tag_list)
         print(type(created_tags))
         print(type(new_tags))
         print(f"create_tags{created_tags}")

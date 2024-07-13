@@ -1,7 +1,7 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from discord_memo.cogs.utils import get_tag_type
+from discord_memo.utils.get_tag_type import get_tag_type
 from discord_memo.db import crud
 from discord_memo.db.database import SessionLocal
 
