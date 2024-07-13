@@ -3,14 +3,14 @@
 
 ## Install
 ### With Docker
+- README.mdの動作だと./sqliteディレクトリにdbが保存される設定になっています
 ```shell
-docker pull kamesan1577/discord-memo:latest \
+docker pull kamesan1577/discord-memo:latest 
 docker run --env DISCORD_TOKEN="your_bot_token" \
 --env SQLALCHEMY_DATABASE_URL="sqlite:////src/discord_memo/bot.db" \
--v $(pwd)/sqlite/:/src/discord_memo/ \ # $(pwd)/sqliteの部分はローカルのdbの保存pathになります,適宜変更して下さい
+-v ./sqlite/:/src/discord_memo/ \
 kamesan1577/discord-memo:latest 
 ```
-
 または
 ```shell
 git clone --depth 1 https://github.com/kamesan1577/geek-camp-vol8.git
