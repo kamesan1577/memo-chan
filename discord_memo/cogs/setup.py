@@ -17,7 +17,7 @@ class Setup(commands.Cog):
         print("setup command called")
         custom_contents = self.bot.get_cog("CustomContents")
         try:
-            await sync_memo_channels(interaction.guild)
+            await sync_memo_channels(interaction)
             await custom_contents.send_embed_info(interaction, "セットアップ", "メモ用のカテゴリを作成しました。")
             return
         except Exception as e:

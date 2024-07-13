@@ -1,6 +1,6 @@
 import discord
 
-import discord_memo.utils.fetch_memo_category as fetch_memo_category
+from discord_memo.utils.fetch_memo_category import fetch_memo_category
 from discord_memo.utils.create_tag_and_channel import create_tag_and_channel
 
 async def sync_memo_channels(interaction: discord.Interaction):
@@ -20,7 +20,7 @@ async def sync_memo_channels(interaction: discord.Interaction):
     else:
         for channel in memo_category.channels:
             print(channel.name)
-            created_tags, new_tags = await create_tag_and_channel(guild, memo_category.id, [channel.name])
+            created_tags, new_tags = await create_tag_and_channel(guild, memo_category.id, ["#"+channel.name])
             print(f"created_tags: {created_tags}")
         return
     
