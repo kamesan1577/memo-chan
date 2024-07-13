@@ -24,6 +24,7 @@ class Hello(commands.Cog):
     async def hello(self, interaction: discord.Interaction):
         await interaction.response.send_message("Hello!")
 
+
     @app_commands.command(name="hello_db", description="Hello!")
     async def hello_db(self, interaction: discord.Interaction, tag:str):
 
@@ -57,24 +58,6 @@ class Hello(commands.Cog):
         # tag = "#test"
         await self.add_message.add_message(interaction, tag, messages)
 
-
-
-    # @app_commands.command(name="hello_error", description="エラーデバッグ用")
-    # async def hello_error(self, interaction: discord.Interaction):
-    #     try:
-    #         # raise ValueError("This is a forced error for testing purposes.")
-    #         raise discord.errors.ConnectionClosed()
-    #     except discord.DiscordException as e:
-    #         print(f"エラーを送信: {e}")
-    #     except ValueError as e:
-    #         print(f"エラー発行")
-    #         raise e
-
-    # @hello_error.error
-    # async def raise_error_handler(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
-    #     await self.error_handl.send_error(interaction, error)
-
-    
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Hello(bot))
