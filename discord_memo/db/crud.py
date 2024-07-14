@@ -206,6 +206,14 @@ def _get_message(db: Session, message_id: int):
         .first()
     )
 
+def _get_message_by_group_id(db: Session, group_id: int):
+    return (
+        db.query(Message)
+        .filter(Message.group_id == group_id, Message.is_deleted == False)
+        .all()
+    )
+
+
 
 def _get_messages(db: Session, skip: int = 0, limit: int = 100):
     return (
@@ -254,3 +262,11 @@ def _delete_message(db: Session, message_id: int):
         db_message.is_deleted = True
         db.commit()
     return db_message
+
+# CURD File entry
+def _get_file_entry_by_message_id(db: Session, message_id: int):
+    return (
+        db.query(FileEntry)
+        .filter(FileEntry.message_table_id == message_id)
+        .all()
+    )
