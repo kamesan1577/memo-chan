@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import List
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, aliased
+from sqlalchemy import or_
 
 from discord_memo.db.models import (
     Message,
@@ -110,6 +111,35 @@ def get_message_groups(db: Session, skip: int = 0, limit: int = 100):
         .limit(limit)
         .all()
     )
+
+
+def get_message_groups_by_tag(
+    db: Session,
+    channel_id_list: List[int],
+    old: bool = False,
+    skip: int = 0,
+    limit: int = 100,
+):
+    stmt = db.query(MessageGroup).join(
+        tag2messagegroup, MessageGroup.group_id == tag2messagegroup.c.message_group_id
+    )
+
+    for idx, tag_id in enumerate(channel_id_list):
+        alias = aliased(tag2messagegroup)
+        if idx == 0:
+            stmt = stmt.filter(tag2messagegroup.c.tag_id == tag_id)
+        else:
+            stmt = stmt.join(
+                alias, alias.c.message_group_id == MessageGroup.group_id
+            ).filter(alias.c.tag_id == tag_id)
+
+    if old:
+        stmt = stmt.order_by(MessageGroup.created_at.desc())
+    else:
+        stmt = stmt.order_by(MessageGroup.created_at.asc())
+
+    stmt = stmt.offset(skip).limit(limit)
+    return stmt.all()
 
 
 def delete_message_group(db: Session, message_id: int):
