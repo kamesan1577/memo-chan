@@ -26,9 +26,8 @@ async def search_memo(
     db = SessionLocal()
     message_group_list = []
     try:
-        message_group_list = get_message_groups_by_tag(
-            db, tag_id_list, sort_from_old, skip
-        )
+        
+        message_group_list = get_message_groups_by_tag(db, tag_id_list)
     except Exception as e:
         print(f"Error searching tag: {e}")
     finally:
