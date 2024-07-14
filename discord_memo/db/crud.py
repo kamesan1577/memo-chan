@@ -161,6 +161,11 @@ def add_node_message(db: Session, message_id: int, group_id: int):
     db.refresh(db_node_message)
     return db_node_message
 
+def delete_all_node_message(db: Session, message_id: int):
+    db.query(NodeMessage).filter(NodeMessage.message_id == message_id).delete()
+    db.commit()
+
+
 
 def _add_tag_to_message_group(db: Session, tag_id: int, group_id: int):
     stmt = tag2messagegroup.insert().values(tag_id=tag_id, message_group_id=group_id)

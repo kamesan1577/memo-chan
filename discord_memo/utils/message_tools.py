@@ -14,7 +14,6 @@ from discord_memo.db.schemas import FileEntryData, MessageData
 from discord_memo.cogs.error_handler import ErrorHandler
 
 
-
 class MessageTools(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
@@ -40,7 +39,8 @@ class MessageTools(commands.Cog):
                     tag_id_list.append(tag_id)
 
             # create message group
-            create_message_group(db, message_data_list, tag_id_list)
+            res = create_message_group(db, message_data_list, tag_id_list)
+            return res.group_id
         finally:
             db.close()
 
@@ -61,9 +61,8 @@ class MessageTools(commands.Cog):
             tag = tag.replace("<#", "#").replace(">", "")
         return tag[1:]
 
-
-    #@breif discordからの引き数としてのtagを必ずidに返してくれる関数
-    #@ 存在しえないtag(型不正など)の場合は-1を返す
+    # @breif discordからの引き数としてのtagを必ずidに返してくれる関数
+    # @ 存在しえないtag(型不正など)の場合は-1を返す
     def tag2channel_id(self, tag:str):
         db = SessionLocal()
         try:

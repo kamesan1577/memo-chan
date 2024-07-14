@@ -23,9 +23,12 @@ class MemoEmbed(commands.Cog):
 
     
     async def send_embed(self, interaction: discord.Interaction, channel_id_list:List[int], embed:discord.Embed) -> None:
-         for channel_id in channel_id_list:
+        res = []
+        for channel_id in channel_id_list:
             channel = self.bot.get_channel(channel_id)
             try: 
-                await channel.send(embed=embed)
-            except:
+                res.append((await channel.send(embed=embed)).id)
+            except Exception as e:
+                print(f"An error occurred: {e}")
                 print(f"Channel with ID {channel_id} not found")
+        return res
