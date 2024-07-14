@@ -1,7 +1,7 @@
 # MemoChan
 ![image](https://github.com/user-attachments/assets/0e6e1a4f-6842-4c9d-a91a-5ccc594e8f9d)
 
-discord向けメモボット\
+discord向けメモ管理ボット\
 技育 CAMP vol.8 でのチーム開発リポジトリ
 
 ## Install
