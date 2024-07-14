@@ -141,6 +141,27 @@ class MessageGroup(Base):
         "Tag", secondary=tag2messagegroup, back_populates="message_groups"
     )
 
+# Botが送信したメッセージの情報を保持するテーブル
+class NodeMessage(Base):
+    __tablename__ = "node_message"
+    __table_args__ = {"comment": "node_messageテーブル"}
+
+    id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
+    message_id = Column(
+        "message_id",
+        Integer,
+        nullable=False,
+        comment="メッセージID",
+    )
+    message_group_id = Column(
+        "message_group_id",
+        Integer,
+        ForeignKey("message_group.group_id"),
+        nullable=False,
+        comment="メッセージグループID",
+    )
+
+
 
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine)

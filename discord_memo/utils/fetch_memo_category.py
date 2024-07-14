@@ -12,7 +12,7 @@ async def fetch_memo_category(interaction: discord.Interaction) -> discord.Categ
     Returns:
         category_id (int): 取得、作成したカテゴリのID
     """
-    print("fetch_memo_categoryu called")
+    print("fetch_memo_category called")
     guild = interaction.guild
     try:
         if not guild:

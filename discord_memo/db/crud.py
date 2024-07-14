@@ -9,6 +9,7 @@ from discord_memo.db.models import (
     Tag,
     tag2messagegroup,
     FileEntry,
+    NodeMessage,
 )
 
 from discord_memo.db.database import SessionLocal
@@ -122,6 +123,13 @@ def delete_message_group(db: Session, message_id: int):
         db_message_group.is_deleted = True
         db.commit()
     return db_message_group
+
+def add_node_message(db: Session, message_id: int, group_id: int):
+    db_node_message = NodeMessage(message_id=message_id, message_group_id=group_id)
+    db.add(db_node_message)
+    db.commit()
+    db.refresh(db_node_message)
+    return db_node_message
 
 
 def _add_tag_to_message_group(db: Session, tag_id: int, group_id: int):
