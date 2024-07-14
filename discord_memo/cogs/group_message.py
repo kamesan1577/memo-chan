@@ -3,8 +3,11 @@ from dataclasses import dataclass
 from discord.ext import commands
 from discord import app_commands
 from discord_memo.db.schemas import MessageData, FileEntryData
+from discord_memo.db.database import SessionLocal
 from discord_memo.utils.create_tag_and_channel import create_tag_and_channel
 from discord_memo.utils.message_tools import MessageTools
+from discord_memo.utils.memo_embed import MemoEmbed
+from discord_memo import config
 
 
 class GroupMessages(commands.Cog):
@@ -13,6 +16,7 @@ class GroupMessages(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.message_tools = MessageTools(bot)
+        self.memo_embed = MemoEmbed(bot)
         self.memo_active = {}
         self.memo_group = {}
         self.memo_group_length = {}
@@ -43,6 +47,7 @@ class GroupMessages(commands.Cog):
         self,
         interaction: discord.Interaction,
         tags: str,  # タグなしメモは許容するんだっけ？
+        title: str = config.MEMO_TITLE,
     ):
         custom_contents = self.bot.get_cog("CustomContents")
         print("memo_end called by user:", interaction.user.id)
@@ -52,9 +57,7 @@ class GroupMessages(commands.Cog):
                 print("memo_group:", self.memo_group[key])
                 self.memo_active.pop(key)
                 self.memo_group_length.pop(key)
-                await self.message_tools.add_message(
-                    interaction, tags, self.memo_group[key]
-                )
+                await self.memo(interaction, self.memo_group[key], tags, title)
                 self.memo_group.pop(key)
                 print("memo_deactive:", key)
                 await custom_contents.send_embed_info(
@@ -107,6 +110,36 @@ class GroupMessages(commands.Cog):
         key = (message.author.id, message.guild.id)
         self.memo_group[key].append(message_data)
         print("message recorded")
+
+    async def memo(
+        self,
+        interaction: discord.Interaction,
+        messages: list[MessageData],
+        tags: str,
+        title: str,
+    ):
+        db = SessionLocal()
+        try:
+            message_data_list = messages
+            await self.message_tools.add_message(interaction, tags, message_data_list)
+
+            embed = self.memo_embed.create_group_embed(
+                [message.content for message in message_data_list],
+                self.message_tools.get_message_link(interaction),
+                title,
+            )
+            channel_id_list = []
+            for tag in tags.split():
+                if tag is not -1:
+                    channel_id_list.append(self.message_tools.tag2channel_id(tag))
+
+            await self.memo_embed.send_embed(interaction, channel_id_list, embed)
+
+        except Exception as e:
+            error_handler = self.bot.get_cog("ErrorHandler")
+            await error_handler.send_error(interaction, e)
+        finally:
+            db.close()
 
 
 async def setup(bot):
